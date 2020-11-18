@@ -11,7 +11,7 @@ class QwixxSimple(QwixxOneHotEnv):
     def calculate_skip_reward(self):
         return 0
 
-    def calculate_reward(self):
+    def calculate_reward(self, changed_values, current_score):
         if self._is_done():
             return self._calculate_score()
         return 0
