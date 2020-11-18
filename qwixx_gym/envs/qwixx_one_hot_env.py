@@ -92,7 +92,7 @@ class QwixxOneHotEnv(Env):
     env = object
     score: int
 
-    def __init__(self, num_players=3, bot_player=0):
+    def __init__(self, num_players=3, bot_player=0, invalid_move_reward=INVALID_MOVE_REWARD):
         self.bot_player = bot_player
         self.num_players = num_players
         self.observation_space = spaces.Box(-np.inf, np.inf,
@@ -101,7 +101,7 @@ class QwixxOneHotEnv(Env):
         self.num_turns = 0
         self.last_actions = []
         self.last_reward = None
-        self.invalid_move_reward = INVALID_MOVE_REWARD
+        self.invalid_move_reward = invalid_move_reward
         self.win_reward = WIN_REWARD
         self.lose_reward = LOSE_REWARD
         self.skip_bias = SKIP_BIAS
