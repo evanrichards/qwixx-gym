@@ -4,3 +4,8 @@ register(
     id='qwixx-v0',
     entry_point='qwixx_gym.envs:QwixxOneHotEnv',
 )
+
+register(
+    id='qwixx-simple-v0',
+    entry_point='qwixx_gym.envs:QwixxSimple',
+)

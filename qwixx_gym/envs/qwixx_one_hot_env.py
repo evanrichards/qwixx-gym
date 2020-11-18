@@ -97,6 +97,11 @@ class QwixxOneHotEnv(Env):
         self.num_turns = 0
         self.last_actions = []
         self.last_reward = None
+        self.invalid_move_reward = INVALID_MOVE_REWARD
+        self.win_reward = WIN_REWARD
+        self.lose_reward = LOSE_REWARD
+        self.skip_bias = SKIP_BIAS
+
         self.reset()
 
     def step(self, action):
@@ -123,7 +128,7 @@ class QwixxOneHotEnv(Env):
         if not self._is_bots_roll() and color_action != 0:
             # non-roller players can't take the color die
             self.current_player = next_player
-            return self._serialize_state(), INVALID_MOVE_REWARD, True, {}
+            return self._serialize_state(), self.invalid_move_reward, True, {}
             # {"error": "took color, did not roll", "scores": scores}
         # If it chooses not to take white or color it adds a strike
         if self._is_bots_roll() and white_action == 0 and color_action == 0:
@@ -141,11 +146,11 @@ class QwixxOneHotEnv(Env):
             wdv = self._white_dice_value()
             # Checks validity of move
             if not COMPARE_FUNCTION[white_color](wdv, latest):
-                return self._serialize_state(), INVALID_MOVE_REWARD, True, {"score": self._calculate_score()}
+                return self._serialize_state(), self.invalid_move_reward, True, {"score": self._calculate_score()}
                 # {"error": "took white die invalid", "latest": latest,
                 #  "value": wdv, "color": white_color, "scores": scores})
             if wdv == COLORS_MAX[white_color] and not self._can_lock_color(white_color):
-                return self._serialize_state(), INVALID_MOVE_REWARD, True, {"score": self._calculate_score()}
+                return self._serialize_state(), self.invalid_move_reward, True, {"score": self._calculate_score()}
                 # {"error": "tried to lock without having 5",
                 #  "latest": self.progress[self.current_player].counts.__dict__[white_color],
                 #  "color": white_color, "scores": scores})
@@ -161,13 +166,13 @@ class QwixxOneHotEnv(Env):
             cdv = self._color_dice_value(white_die, color)
             # Checks validity of move
             if not COMPARE_FUNCTION[color](cdv, latest):
-                return self._serialize_state(), INVALID_MOVE_REWARD, True, {"score": self._calculate_score()}
+                return self._serialize_state(), self.invalid_move_reward, True, {"score": self._calculate_score()}
                 # {"error": "took color die invalid", "latest": latest,
                 #  "value": cdv, "color": color, "white": white_die, "scores": scores})
 
             if cdv == COLORS_MAX[color] and not self._can_lock_color(color):
                 self.current_player = next_player
-                return self._serialize_state(), INVALID_MOVE_REWARD, True, {"score": self._calculate_score()}
+                return self._serialize_state(), self.invalid_move_reward, True, {"score": self._calculate_score()}
                 # {"error": "tried to lock without having 5",
                 #  "latest": self.progress[self.current_player].counts.__dict__[color],
                 #  "color": color, "scores": scores})
@@ -213,7 +218,7 @@ class QwixxOneHotEnv(Env):
         else:
             r = 10
         self.last_reward = min([self.last_reward, r])
-        return self.last_reward - SKIP_BIAS
+        return self.last_reward - self.skip_bias
 
     def get_skipped_values(self, color, latest):
         cmv = COLORS_MAX[color]
