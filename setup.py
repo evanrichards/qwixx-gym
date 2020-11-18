@@ -1,6 +1,9 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='qwixx_gym',
-      version='0.0.2',
-      install_requires=['gym']
+      use_scm_version=True,
+      setup_requires=['setuptools_scm'],
+      install_requires=['gym'],
+      packages=find_packages(),
+      include_package_data=True,
       )
