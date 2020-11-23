@@ -9,3 +9,8 @@ register(
     id='qwixx-simple-v0',
     entry_point='qwixx_gym.envs:QwixxSimple',
 )
+
+register(
+    id='qwixx-flat-v0',
+    entry_point='qwixx_gym.envs:QwixxFlat',
+)

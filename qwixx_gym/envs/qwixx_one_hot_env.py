@@ -121,9 +121,6 @@ class QwixxOneHotEnv(Env):
             done (bool): whether the episode has ended, in which case further step() calls will return undefined results
             info (dict): contains auxiliary diagnostic information (helpful for debugging, and sometimes learning)
         """
-        if not self.action_space.contains(action):
-            # noinspection PyTypeChecker
-            action = np.array([action % 5, action // 5])
         changed_values = []
         current_score = self._calculate_score()
         next_player = (self.current_player + 1) % self.num_players
