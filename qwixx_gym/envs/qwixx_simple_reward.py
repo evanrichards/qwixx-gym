@@ -6,6 +6,8 @@ class QwixxSimple(QwixxOneHotEnv):
         self.default_return = default_return
 
     def calculate_skip_reward(self):
+        if self._is_done():
+            return self._calculate_score()
         return self.default_return
 
     def calculate_reward(self, changed_values, current_score):
