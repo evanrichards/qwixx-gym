@@ -1,8 +1,8 @@
 from qwixx_gym.envs import QwixxOneHotEnv
 
 class QwixxSimple(QwixxOneHotEnv):
-    def __init__(self, num_players=3, bot_player=0, invalid_move_reward=-1, default_return=0):
-        super(QwixxSimple, self).__init__(num_players, bot_player, invalid_move_reward)
+    def __init__(self, default_return=0, **kwargs):
+        super(QwixxSimple, self).__init__(**kwargs)
         self.default_return = default_return
 
     def calculate_skip_reward(self):
