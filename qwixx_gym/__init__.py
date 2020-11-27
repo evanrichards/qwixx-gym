@@ -14,3 +14,8 @@ register(
     id='qwixx-flat-v0',
     entry_point='qwixx_gym.envs:QwixxFlat',
 )
+
+register(
+    id='qwixx-normalized-v0',
+    entry_point='qwixx_gym.envs:QwixxNormalized',
+)
