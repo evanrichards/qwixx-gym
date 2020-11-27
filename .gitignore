@@ -8,3 +8,4 @@ dist
 .python-version
 .eggs
 .vscode
+models

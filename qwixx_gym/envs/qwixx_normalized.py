@@ -39,7 +39,7 @@ VALID_MOVE_REWARD = 0.01
 
 
 class ObservationState(object):
-    state = np.zeros(286)
+    state = np.zeros(286, dtype=np.float32)
     bot_turn = state[0:1]
     players_turn = state[1:6]
     white1_roll = state[6:12]
@@ -199,7 +199,6 @@ class QwixxNormalized(Env):
             info (dict): contains auxiliary diagnostic information (helpful for debugging, and sometimes learning)
         """
         white_action, color_action = action % 5, action // 5
-        print(white_action, color_action)
         if not self._is_bots_roll() and color_action != 0:
             # non-roller players can't take the color die
             return (self.obs.state, self.invalid_move_reward, True,
@@ -214,12 +213,12 @@ class QwixxNormalized(Env):
                     self._is_done(), {"action": "took strike", "scores": score})
         # take white action
         if white_action != 0:
-            err = self.process_white_action(WHITE_ACTION_COLOR[white_action])
+            err = self.process_white_action(white_action)
             if err is not None:
                 return (self.obs.state, self.invalid_move_reward, True, err)
         # take color action
         if color_action != 0:
-            err = self.process_color_action(COLOR_ACTION[color_action])
+            err = self.process_color_action(color_action)
             if err is not None:
                 return (self.obs.state, self.invalid_move_reward, True, err)
         self._advance_player()
@@ -230,7 +229,7 @@ class QwixxNormalized(Env):
 
     def process_color_action(self, color_action):
         white_die, color = COLOR_ACTION[color_action]
-        nums = self.obs.get_nums_for_color(color)[-1]
+        nums = self.obs.get_nums_for_color(color)
         latest = nums[-1] if len(nums) > 0 else None
         cdv = self._color_dice_value(white_die, color)
         # Checks validity of move
@@ -245,7 +244,8 @@ class QwixxNormalized(Env):
                     "scores": self._calculate_score()}
         self.obs.set_num_for_color(color, cdv)
 
-    def process_white_action(self, white_color):
+    def process_white_action(self, white_action):
+        white_color = WHITE_ACTION_COLOR[white_action]
         nums = self.obs.get_nums_for_color(white_color)
         latest = nums[-1] if len(nums) > 0 else None
         wdv = self._white_dice_value()
